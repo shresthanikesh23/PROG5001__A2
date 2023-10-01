@@ -1,0 +1,19 @@
+#BlueJ class context
+comment0.target=Student
+comment1.params=lastName\ firstName\ studentID\ assignment1\ assignment2\ assignment3
+comment1.target=Student(java.lang.String,\ java.lang.String,\ java.lang.String,\ double,\ double,\ double)
+comment2.params=
+comment2.target=java.lang.String\ getLastName()
+comment3.params=
+comment3.target=java.lang.String\ getFirstName()
+comment4.params=
+comment4.target=java.lang.String\ getStudentID()
+comment5.params=
+comment5.target=double\ getAssignment1()
+comment6.params=
+comment6.target=double\ getAssignment2()
+comment7.params=
+comment7.target=double\ getAssignment3()
+comment8.params=
+comment8.target=double\ calculateTotalMark()
+numComments=9

@@ -137,6 +137,7 @@ public class StudentMarksAnalyzer {
         }
     }
     //thresold
+    //print top 5 highest student and lowest
     private void printTop5Students(boolean highest) {
         students.sort((s1, s2) -> {
             double totalMarks1 = s1.calculateTotalMark();
@@ -148,7 +149,7 @@ public class StudentMarksAnalyzer {
         if (!highest) {
             count = Math.min(count, students.size());
         }
-
+        
         System.out.println("Top 5 students with " + (highest ? "highest" : "lowest") + " total marks:");
         for (int i = 0; i < count; i++) {
             Student student = students.get(i);

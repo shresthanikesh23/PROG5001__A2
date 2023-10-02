@@ -41,7 +41,7 @@ public class Student {
         return assignment3;
     }
 
-    // Calculate and return the total mark for the student
+    // Calculate thw total mark of the student and return
     public double calculateTotalMark() {
         return assignment1 + assignment2 + assignment3;
     }

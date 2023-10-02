@@ -149,7 +149,7 @@ public class StudentMarksAnalyzer {
         if (!highest) {
             count = Math.min(count, students.size());
         }
-        
+        //Top % student with hightest and lowest
         System.out.println("Top 5 students with " + (highest ? "highest" : "lowest") + " total marks:");
         for (int i = 0; i < count; i++) {
             Student student = students.get(i);

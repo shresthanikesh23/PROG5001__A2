@@ -1,0 +1,7 @@
+#BlueJ class context
+comment0.target=ReportGenerator
+comment1.params=students
+comment1.target=ReportGenerator(java.util.List)
+comment2.params=
+comment2.target=void\ generateReport()
+numComments=3

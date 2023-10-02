@@ -1,21 +1,31 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 public class StudentMarksAnalyzer {
+    private List<Student> students;
+    private Scanner scanner;
+
+    public StudentMarksAnalyzer() {
+        students = new ArrayList<>();
+        scanner = new Scanner(System.in);
+    }
+
     public static void main(String[] args) {
-        List<Student> students = new ArrayList<>();
-        String unitName = "";
-        Scanner scanner = new Scanner(System.in);
+        StudentMarksAnalyzer analyzer = new StudentMarksAnalyzer();
+        analyzer.loadDataFromCSV("prog5001_students_grade_2022.csv");
+        analyzer.runMenuSystem();
 
-        try {
-            System.out.print("Enter the file name: ");
-            String fileName = scanner.nextLine();
+        // Generate and display the report
+        ReportGenerator reportGenerator = new ReportGenerator(analyzer.getStudents());
+        reportGenerator.generateReport();
+    }
 
-            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+    public void loadDataFromCSV(String fileName) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             boolean readingStudentData = false;
 
@@ -39,74 +49,55 @@ public class StudentMarksAnalyzer {
                     }
                 } else if (line.startsWith("Unit:")) {
                     readingStudentData = true;
-                    unitName = line;
-                    System.out.println("Unit Name: " + unitName);
+                    System.out.println("Unit Name: " + line);
                 }
-            }
-
-            // Display student data and calculate total marks
-            for (Student student : students) {
-                System.out.println("Last Name: " + student.getLastName());
-                System.out.println("First Name: " + student.getFirstName());
-                System.out.println("Student ID: " + student.getStudentID());
-                System.out.println("Assignment 1: " + student.getAssignment1());
-                System.out.println("Assignment 2: " + student.getAssignment2());
-                System.out.println("Assignment 3: " + student.getAssignment3());
-
-                // Calculate and display the total mark
-                double totalMark = student.calculateTotalMark();
-                System.out.println("Total Mark: " + totalMark);
-
-                System.out.println();
-            }
-
-            // Prompt the user to enter the threshold for total marks
-            System.out.print("Enter the threshold for total marks: ");
-            double threshold = scanner.nextDouble();
-
-            // Print students below the threshold
-            System.out.println("Students with Total Marks Below Threshold:");
-            for (Student student : students) {
-                double totalMark = student.calculateTotalMark();
-                if (totalMark < threshold) {
-                    System.out.println("Last Name: " + student.getLastName());
-                    System.out.println("First Name: " + student.getFirstName());
-                    System.out.println("Student ID: " + student.getStudentID());
-                    System.out.println("Total Mark: " + totalMark);
-                    System.out.println();
-                }
-            }
-
-            // Sort students by total marks (highest to lowest)
-            students.sort((s1, s2) -> Double.compare(s2.calculateTotalMark(), s1.calculateTotalMark()));
-
-            // Print the top 5 students with the highest total marks
-            System.out.println("Top 5 Students with Highest Total Marks:");
-            for (int i = 0; i < Math.min(5, students.size()); i++) {
-                Student student = students.get(i);
-                System.out.println("Last Name: " + student.getLastName());
-                System.out.println("First Name: " + student.getFirstName());
-                System.out.println("Student ID: " + student.getStudentID());
-                System.out.println("Total Mark: " + student.calculateTotalMark());
-                System.out.println();
-            }
-
-            // Print the top 5 students with the lowest total marks
-            System.out.println("Top 5 Students with Lowest Total Marks:");
-            for (int i = students.size() - 1; i >= Math.max(0, students.size() - 5); i--) {
-                Student student = students.get(i);
-                System.out.println("Last Name: " + student.getLastName());
-                System.out.println("First Name: " + student.getFirstName());
-                System.out.println("Student ID: " + student.getStudentID());
-                System.out.println("Total Mark: " + student.calculateTotalMark());
-                System.out.println();
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            // Close the scanner in a finally block to ensure it's always closed
-            scanner.close();
         }
+    }
+
+    public void runMenuSystem() {
+        int choice;
+
+        do {
+            System.out.println("Menu:");
+            System.out.println("1. Calculate total marks for all students");
+            System.out.println("2. Print students with total marks below a threshold");
+            System.out.println("3. Print top 5 students with highest total marks");
+            System.out.println("4. Print top 5 students with lowest total marks");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice (1-5): ");
+
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    calculateTotalMarks();
+                    break;
+                case 2:
+                    printStudentsBelowThreshold();
+                    break;
+                case 3:
+                    printTop5Students(true);
+                    break;
+                case 4:
+                    printTop5Students(false);
+                    break;
+                case 5:
+                    System.out.println("Exiting the program.");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please enter a number between 1 and 5.");
+            }
+        } while (choice != 5);
+
+        scanner.close();
+    }
+
+    // Getter method for the students list
+    public List<Student> getStudents() {
+        return students;
     }
 
     // Helper method to parse double values, handling empty or non-numeric strings
@@ -118,6 +109,54 @@ public class StudentMarksAnalyzer {
             return Double.parseDouble(value);
         } catch (NumberFormatException e) {
             return 0.0;
+        }
+    }
+
+    private void calculateTotalMarks() {
+        for (Student student : students) {
+            double totalMarks = student.calculateTotalMark();
+            System.out.println(
+                    student.getFirstName() + " " + student.getLastName() + ", ID: " + student.getStudentID() +
+                            "\nTotal Marks: " + totalMarks
+            );
+        }
+    }
+
+    private void printStudentsBelowThreshold() {
+        System.out.print("Enter the threshold: ");
+        double threshold = scanner.nextDouble();
+        System.out.println("Students with total marks below " + threshold + ":");
+        for (Student student : students) {
+            double totalMarks = student.calculateTotalMark();
+            if (totalMarks < threshold) {
+                System.out.println(
+                        student.getFirstName() + " " + student.getLastName() + ", ID: " + student.getStudentID() +
+                                "\nTotal Marks: " + totalMarks
+                );
+            }
+        }
+    }
+
+    private void printTop5Students(boolean highest) {
+        students.sort((s1, s2) -> {
+            double totalMarks1 = s1.calculateTotalMark();
+            double totalMarks2 = s2.calculateTotalMark();
+            return highest ? Double.compare(totalMarks2, totalMarks1) : Double.compare(totalMarks1, totalMarks2);
+        });
+
+        int count = 5;
+        if (!highest) {
+            count = Math.min(count, students.size());
+        }
+
+        System.out.println("Top 5 students with " + (highest ? "highest" : "lowest") + " total marks:");
+        for (int i = 0; i < count; i++) {
+            Student student = students.get(i);
+            double totalMarks = student.calculateTotalMark();
+            System.out.println(
+                    student.getFirstName() + " " + student.getLastName() + ", ID: " + student.getStudentID() +
+                            "\nTotal Marks: " + totalMarks
+            );
         }
     }
 }

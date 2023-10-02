@@ -1,3 +1,6 @@
+//Here in ReportGenerator class in our code is  
+//for generating a report based on the data and calculations 
+//performed in the StudentMarksAnalyzer class.
 import java.util.List;
 
 public class ReportGenerator {

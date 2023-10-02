@@ -136,7 +136,7 @@ public class StudentMarksAnalyzer {
             }
         }
     }
-    //thresold
+    //thresoldd
     //print top 5 highest student and lowest
     private void printTop5Students(boolean highest) {
         students.sort((s1, s2) -> {
